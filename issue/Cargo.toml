@@ -2,8 +2,12 @@
 name = "issue"
 version = "0.1.0"
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+categories = ["development-tools", "development-tools::build-utils"]
+keywords = ["issue", "issue-tracking", "github", "gitlab"]
+readme  = "../README.md"
+repository = "git@github.com:kaiserkarel/issue"
+license-file = "../LICENSE"
+description = "Tracks open issues during compile time and emits warnings if issues are closed"
 
 [dependencies]
 macros = { path = "../macros" }

@@ -1,0 +1,14 @@
+error: issue https://github.com/KaiserKarel/issue/issues/2 has been closed
+ --> $DIR/github_closed_issue.rs:3:16
+  |
+3 | #[issue::track(url="https://github.com/KaiserKarel/issue/issues/2")]
+  |                ^^^
+
+error[E0601]: `main` function not found in crate `$CRATE`
+ --> $DIR/github_closed_issue.rs:3:1
+  |
+3 | / #[issue::track(url="https://github.com/KaiserKarel/issue/issues/2")]
+4 | | fn main() {
+5 | |
+6 | | }
+  | |_^ consider adding a `main` function to `$DIR/ui/github_closed_issue.rs`

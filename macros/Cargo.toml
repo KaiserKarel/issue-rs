@@ -1,0 +1,21 @@
+[package]
+name = "macros"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+proc-macro = true
+
+[dependencies]
+darling = "0.13.0"
+syn = "1.0.73"
+octocrab = "0.9"
+reqwest = { version = "0.11.4", features = ["blocking", "rustls-tls"]}
+serde = { version = "1", features = ["derive"]}
+chrono = { version = "0.4.19", features = [ "serde" ] }
+url = "2.2.2"
+anyhow = "1.0.42"
+proc-macro-error = { version = "1", default-features = false }
+itertools = "0.10.1"

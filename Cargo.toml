@@ -1,0 +1,12 @@
+[package]
+name = "issue"
+version = "0.1.0"
+edition = "2018"
+license = "MIT"
+description = "Cargo subcommand for checking the state of actionable issues."
+homepage = "https://github.com/kaiserkarel/issue"
+repository = "https://github.com/kaiserkarel/issue"
+readme = "README.md"
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]

@@ -5,7 +5,7 @@ edition = "2018"
 categories = ["development-tools", "development-tools::build-utils"]
 keywords = ["issue", "issue-tracking", "github", "gitlab"]
 readme  = "../README.md"
-repository = "git@github.com:kaiserkarel/issue"
+repository = "https://github.com/kaiserkarel/issue"
 license-file = "../LICENSE"
 description = "Tracks open issues during compile time and emits warnings if issues are closed"
 

@@ -10,4 +10,4 @@ license-file = "../LICENSE"
 description = "Tracks open issues during compile time and emits warnings if issues are closed"
 
 [dependencies]
-macros = { path = "../macros" }
+macros = { package = "issue-macros", version = "0.1.1", path = "../macros" }

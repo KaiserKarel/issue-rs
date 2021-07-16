@@ -2,6 +2,8 @@
 name = "issue-macros"
 version = "0.1.1"
 edition = "2018"
+license-file = "../LICENSE"
+description = "Procedural macro implementation for `issue`."
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

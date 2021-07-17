@@ -22,12 +22,21 @@ pub fn track(args: TokenStream, input: TokenStream) -> TokenStream {
 
     match issue.is_closed() {
         Err(e) => {
-            emit_error!(
-                attr_args[0].span(),
-                "unable to access {}\n  {}",
-                issue.url,
-                e
-            )
+            if std::env::var("ISSUE_HARD_FAIL").is_ok() {
+                emit_error!(
+                    attr_args[0].span(),
+                    "unable to access {}\n  {}",
+                    issue.url,
+                    e
+                )
+            } else {
+                emit_warning!(
+                    attr_args[0].span(),
+                    "unable to access {}\n  {}",
+                    issue.url,
+                    e
+                )
+            }
         }
         Ok(true) => {
             if std::env::var("ISSUE_HARD_FAIL").is_ok() {

@@ -7,5 +7,5 @@ members = [
 ]
 
 exclude = [
-    "tests"
+    "tests",
 ]

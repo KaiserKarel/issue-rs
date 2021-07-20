@@ -6,6 +6,9 @@ use structopt::StructOpt;
 use tokio::time::Duration;
 use tokio_stream::{self as stream};
 
+#[cfg(test)]
+mod tests;
+
 #[derive(StructOpt, Debug)]
 #[structopt(bin_name = "cargo")]
 pub enum Cli {
@@ -18,12 +21,16 @@ pub enum Cmd {
     Check {
         #[structopt(short, long)]
         package: Option<String>,
+        #[structopt(short, long)]
+        manifest_path: Option<String>,
     },
 
     #[structopt(name = "list")]
     List {
         #[structopt(short, long)]
         package: Option<String>,
+        #[structopt(short, long)]
+        manifest_path: Option<String>,
     },
 }
 
@@ -31,9 +38,15 @@ pub enum Cmd {
 async fn main() {
     let Cli::Issue(opts) = Cli::from_args();
 
-    let package = match opts.clone() {
-        Cmd::Check { package } => package,
-        Cmd::List { package } => package,
+    let (package, manifest_path) = match opts.clone() {
+        Cmd::Check {
+            package,
+            manifest_path,
+        } => (package, manifest_path),
+        Cmd::List {
+            package,
+            manifest_path,
+        } => (package, manifest_path),
     };
 
     let cargo = std::env::var("CARGO").expect("cargo not found");
@@ -49,6 +62,10 @@ async fn main() {
     package
         .as_ref()
         .map(|package| command.args(["-p", package]));
+
+    manifest_path
+        .as_ref()
+        .map(|manifest_path| command.args(["--manifest-path", manifest_path]));
 
     command.stdout(Stdio::piped());
 

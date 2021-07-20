@@ -13,9 +13,11 @@ proc-macro = true
 [dependencies]
 darling = "0.13.0"
 syn = "1.0.73"
-reqwest = { version = "0.11.4", features = ["blocking", "rustls-tls", "json"]}
+quote = "1.0.9"
 serde = { version = "1", features = ["derive"]}
-url = "2.2.2"
 anyhow = "1.0.42"
 proc-macro-error = { version = "1", default-features = false }
 itertools = "0.10.1"
+lib = { path = "../lib" }
+lazy_static = "1.4.0"
+serde_json = "1.0.64"

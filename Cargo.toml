@@ -1,6 +1,11 @@
 [workspace]
 members = [
+    "issue",
+    "cargo-issue",
+    "lib",
     "macros",
-    "tests",
-    "issue"
+]
+
+exclude = [
+    "tests"
 ]

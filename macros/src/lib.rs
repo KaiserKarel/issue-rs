@@ -1,10 +1,13 @@
 use darling::FromMeta;
-use itertools::Itertools;
+use lazy_static::lazy_static;
+use lib::{Level, Mode};
 use proc_macro::TokenStream;
 use proc_macro_error::{emit_error, emit_warning, proc_macro_error};
 use syn::{parse_macro_input, spanned::Spanned, AttributeArgs};
 
-const APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"));
+lazy_static! {
+    static ref MODE: Mode = lib::get_mode();
+}
 
 /// Fetches the issue from Github and emits a warning or error if it is closed depending on the
 /// `ISSUE_HARD_FAIL` environment variable.
@@ -13,23 +16,21 @@ const APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PK
 pub fn track(args: TokenStream, input: TokenStream) -> TokenStream {
     let attr_args = parse_macro_input!(args as AttributeArgs);
 
-    let issue = match Issue::from_list(&attr_args) {
-        Ok(v) => v,
+    let issue: lib::Issue = match Issue::from_list(&attr_args) {
+        Ok(v) => v.into(),
         Err(e) => {
             return TokenStream::from(e.write_errors());
         }
     };
 
-    match issue.is_closed() {
-        Err(e) => {
-            if std::env::var("ISSUE_HARD_FAIL").is_ok() {
-                emit_error!(
-                    attr_args[0].span(),
-                    "unable to access {}\n  {}",
-                    issue.url,
-                    e
-                )
-            } else {
+    match *MODE {
+        Mode::Noop => (),
+        Mode::Pipe => println!(
+            "{}",
+            serde_json::to_string(&issue).expect("serializing issue")
+        ),
+        Mode::Emit(Level::Warn) => match issue.is_closed() {
+            Err(e) => {
                 emit_warning!(
                     attr_args[0].span(),
                     "unable to access {}\n  {}",
@@ -37,63 +38,37 @@ pub fn track(args: TokenStream, input: TokenStream) -> TokenStream {
                     e
                 )
             }
-        }
-        Ok(true) => {
-            if std::env::var("ISSUE_HARD_FAIL").is_ok() {
-                emit_error!(attr_args[0].span(), "issue {} has been closed", issue.url)
-            } else {
+            Ok(true) => {
                 emit_warning!(attr_args[0].span(), "issue {} has been closed", issue.url)
             }
-        }
-        _ => (),
+            _ => (),
+        },
+        Mode::Emit(Level::Error) => match issue.is_closed() {
+            Err(e) => {
+                emit_error!(
+                    attr_args[0].span(),
+                    "unable to access {}\n  {}",
+                    issue.url,
+                    e
+                )
+            }
+            Ok(true) => {
+                emit_error!(attr_args[0].span(), "issue {} has been closed", issue.url)
+            }
+            _ => (),
+        },
     }
-
     input
 }
 
-// Both Github and Gitlab use the `closed_at` field to identify closed issues.
-#[derive(Default, Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
-struct ApiIssue {
-    pub closed_at: Option<String>,
-}
-
-#[derive(Default, FromMeta)]
+#[derive(Default, Debug, FromMeta, serde::Serialize)]
 #[darling(default)]
 struct Issue {
     pub url: String,
 }
 
-impl Issue {
-    fn canonicalize_url(&self) -> url::Url {
-        let url = url::Url::parse(&self.url).unwrap();
-
-        if url.host_str().unwrap().contains("github") {
-            let path: String = Itertools::intersperse(url.path_segments().unwrap(), "/").collect();
-            return url::Url::parse(&format!("https://api.github.com/repos/{}", path)).unwrap();
-        }
-
-        unreachable!("only github public repositories are currently supported")
-    }
-
-    pub fn is_closed(&self) -> Result<bool, anyhow::Error> {
-        let client = reqwest::blocking::ClientBuilder::new()
-            .user_agent(APP_USER_AGENT)
-            .build()
-            .unwrap();
-
-        let response = client.get(self.canonicalize_url()).send()?;
-
-        if !response.status().is_success() {
-            anyhow::bail!(
-                "failed to fetch issue: {}",
-                response
-                    .text()
-                    .unwrap_or_else(|e| format!("no response found: {}", e))
-            )
-        }
-
-        let issue: ApiIssue = response.json()?;
-
-        Ok(issue.closed_at.is_some())
+impl From<Issue> for lib::Issue {
+    fn from(issue: Issue) -> Self {
+        lib::Issue { url: issue.url }
     }
 }

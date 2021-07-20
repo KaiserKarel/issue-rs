@@ -1,0 +1,17 @@
+[package]
+name = "cargo-issue"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+issue = { path = "../issue" }
+tokio = { version = "1", features = ["full"] }
+structopt = { version = "0.3", default-features = false}
+serde = {version = "1", features = ["derive"]}
+serde_json = "1.0.64"
+tokio-stream = "0.1.7"
+futures = "0.3.15"
+reqwest = "0.11.4"
+anyhow = "1.0.42"

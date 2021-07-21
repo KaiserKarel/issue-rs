@@ -10,25 +10,37 @@ use tokio_stream::{self as stream};
 mod tests;
 
 #[derive(StructOpt, Debug)]
-#[structopt(bin_name = "cargo")]
+#[structopt(
+    name = "issue",
+    bin_name = "cargo",
+    about = "Track open issues and be warned once they're closed."
+)]
 pub enum Cli {
+    /// Track open issues and be warned once they're closed.
     #[structopt(name = "issue")]
     Issue(Cmd),
 }
 
 #[derive(StructOpt, Debug, Clone)]
 pub enum Cmd {
+    /// Checks all tracked issues in the project. More efficient for large projects with many tracked
+    /// issues, and the recommend way to run `issue-rs` in CI.
     Check {
+        /// The cargo package to check.
         #[structopt(short, long)]
         package: Option<String>,
+        /// The manifest path of the cargo package check.
         #[structopt(short, long)]
         manifest_path: Option<String>,
     },
-
+    /// Lists all tracked issues, regardless of their status. Useful to get an overview of the
+    /// technical debt and dependencies on issues.
     #[structopt(name = "list")]
     List {
+        /// The cargo package to check.
         #[structopt(short, long)]
         package: Option<String>,
+        /// The manifest path of the cargo package check.
         #[structopt(short, long)]
         manifest_path: Option<String>,
     },
@@ -50,7 +62,6 @@ async fn main() {
     };
 
     let cargo = std::env::var("CARGO").expect("cargo not found");
-
     let mut command = Command::new(cargo);
     command.env(
         CONFIG_ENV,
@@ -84,10 +95,13 @@ async fn main() {
                 let issue = issue.expect("deserializing cargo check stdout");
 
                 match opts {
-                    Cmd::List { .. } => println!("{:?}", &issue),
+                    Cmd::List { .. } => println!("{}", &issue),
                     Cmd::Check { .. } => {
-                        // TODO handle network failure
-                        if is_closed(&issue).await.unwrap() {
+                        #[allow(clippy::blocks_in_if_conditions)]
+                        if is_closed(&issue).await.unwrap_or_else(|e| {
+                            eprintln!("unable to access issue: {}", e);
+                            false
+                        }) {
                             println!("Closed issue: \n\n       - url: {}", &issue.url)
                         }
                     }

@@ -2,6 +2,7 @@ mod config;
 
 pub use config::{Level, Mode};
 use itertools::Itertools;
+use std::fmt::{Display, Formatter};
 
 pub const CONFIG_ENV: &str = "ISSUE_RS::Config::Mode";
 pub const IGNORE_ENV: &str = "ISSUE_RS_IGNORE";
@@ -22,6 +23,12 @@ pub const APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARG
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Issue {
     pub url: String,
+}
+
+impl Display for Issue {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "issue: {}", self.url)
+    }
 }
 
 // Both Github and Gitlab use the `closed_at` field to identify closed issues.

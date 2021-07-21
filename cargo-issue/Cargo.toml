@@ -1,0 +1,27 @@
+[package]
+name = "cargo-issue"
+version = "0.1.4"
+edition = "2018"
+authors = ["kaiserkarel"]
+categories = ["development-tools", "development-tools::build-utils"]
+keywords = ["issue", "issue-tracking", "github", "gitlab"]
+readme  = "../README.md"
+repository = "https://github.com/kaiserkarel/issue"
+license-file = "../LICENSE"
+description = "CLI for issue-rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+issue = { version = "0.1.4", path = "../issue" }
+tokio = { version = "1", features = ["full"] }
+structopt = { version = "0.3", default-features = false}
+serde = {version = "1", features = ["derive"]}
+serde_json = "1.0.64"
+tokio-stream = "0.1.7"
+futures = "0.3.15"
+reqwest = "0.11.4"
+anyhow = "1.0.42"
+
+[dev-dependencies]
+assert_cmd = "1.0.7"

@@ -13,3 +13,5 @@
 //!
 //! Once the tracked issue is resolved, a warning will be emitted during compile time.
 pub use ::macros::track;
+
+pub use ::lib::{GithubIssue, Issue, Level, Mode, APP_USER_AGENT, CONFIG_ENV};

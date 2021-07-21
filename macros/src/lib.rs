@@ -5,8 +5,14 @@ use proc_macro::TokenStream;
 use proc_macro_error::{emit_error, emit_warning, proc_macro_error};
 use syn::{parse_macro_input, spanned::Spanned, AttributeArgs};
 
+#[cfg(not(debug_assertions))]
 lazy_static! {
-    static ref MODE: Mode = lib::get_mode();
+    static ref MODE: Mode = lib::get_mode().unwrap_or(Mode::Noop);
+}
+
+#[cfg(debug_assertions)]
+lazy_static! {
+    static ref MODE: Mode = lib::get_mode().unwrap_or(Mode::Emit(Level::Warn));
 }
 
 /// Fetches the issue from Github and emits a warning or error if it is closed depending on the

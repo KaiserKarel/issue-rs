@@ -14,3 +14,7 @@ issue = { path = "../issue" }
 [dev-dependencies]
 issue = { path = "../issue" }
 trybuild = "1.0.42"
+
+[features]
+default = []
+integration = []

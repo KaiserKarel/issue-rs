@@ -84,7 +84,7 @@ async fn main() {
     let stdout = handle.stdout.as_mut().unwrap();
     let stream = Deserializer::from_reader(stdout).into_iter::<issue::Issue>();
 
-    // Ensures that cargo's build output is not interleaved with the actuall issues being printed.
+    // Ensures that cargo's build output is not interleaved with the actual issues being printed.
     tokio::time::sleep(Duration::from_millis(100)).await;
 
     stream::iter(stream)

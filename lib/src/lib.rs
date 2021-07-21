@@ -7,15 +7,14 @@ use std::fmt::{Display, Formatter};
 pub const CONFIG_ENV: &str = "ISSUE_RS::Config::Mode";
 pub const IGNORE_ENV: &str = "ISSUE_RS_IGNORE";
 
-pub fn get_mode() -> Mode {
-    std::env::var(CONFIG_ENV)
-        .map(|var| serde_json::from_str(&var).expect("reading Mode from configuration"))
-        .unwrap_or_else(|_| {
-            std::env::var(IGNORE_ENV)
-                .ok()
-                .map(|_| Mode::Noop)
-                .unwrap_or_default()
-        })
+pub fn get_mode() -> Option<Mode> {
+    if let Ok(var) = std::env::var(CONFIG_ENV) {
+        serde_json::from_str(&var).expect("reading Mode from configuration")
+    } else if std::env::var(IGNORE_ENV).is_ok() {
+        Some(Mode::Noop)
+    } else {
+        Some(Default::default())
+    }
 }
 
 pub const APP_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), "/", env!("CARGO_PKG_VERSION"));

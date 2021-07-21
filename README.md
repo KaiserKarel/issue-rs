@@ -13,6 +13,13 @@ type Result<T> = core::result::Result<T, ()>;
 
 Once the tracked issue is resolved, a warning will be emitted during compile time. 
 
+# CI and Configuration
+
+Locally it is recommended to always run the tracked issue. Alternatively, setting the environment variable 
+`ISSUE_RS_IGNORE` to any value will disable it entirely. 
+
+Using cargo-issue
+
 
 ## TODO
 

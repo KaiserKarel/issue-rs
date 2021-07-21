@@ -11,4 +11,4 @@ description = "Tracks open issues during compile time and emits warnings if issu
 
 [dependencies]
 macros = { package = "issue-macros", version = "0.1.1", path = "../macros" }
-lib = { path = "../lib" }
+lib = { version = "0.1.2", path = "../lib", package = "cargo-issue-lib" }

@@ -18,8 +18,10 @@ Once the tracked issue is resolved, a warning will be emitted during compile tim
 Locally it is recommended to always run the tracked issue. Alternatively, setting the environment variable 
 `ISSUE_RS_IGNORE` to any value will disable it entirely. 
 
-Using cargo-issue
-
+For reproducible builds, set `ISSUE_RS_IGNORE` and use the [cargo-issue](https://crates.io/crates/cargo-issue) subcommand
+as a separate step in CI. This will still require network connectivity however. `cargo-issue` offers higher performance 
+by concurrently tracking issues, which for large codebases, with many tracked issues, can significantly improve 
+performance as well.
 
 ## TODO
 

@@ -1,6 +1,6 @@
 [package]
 name = "issue"
-version = "0.1.2"
+version = "0.1.4"
 edition = "2018"
 categories = ["development-tools", "development-tools::build-utils"]
 keywords = ["issue", "issue-tracking", "github", "gitlab"]

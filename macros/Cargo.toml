@@ -1,6 +1,6 @@
 [package]
 name = "issue-macros"
-version = "0.1.2"
+version = "0.1.4"
 edition = "2018"
 license-file = "../LICENSE"
 description = "Procedural macro implementation for `issue`."
